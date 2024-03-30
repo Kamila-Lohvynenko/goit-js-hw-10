@@ -3,52 +3,42 @@ import 'izitoast/dist/css/iziToast.min.css';
 
 const form = document.querySelector('.form');
 const inputDelay = form.elements.delay;
-const inputState = form.elements.state;
-
-inputDelay.addEventListener('input', () =>
-  localStorage.setItem('delay', inputDelay.value)
-);
-inputState.forEach(radio => {
-  radio.addEventListener('input', () => {
-    localStorage.setItem('state', inputState.value);
-  });
-});
+const inputStates = form.elements.state;
 
 form.addEventListener('submit', handleSubmit);
 
-function createPromise() {
-  const delay = localStorage.getItem('delay');
-  if (localStorage.getItem('state') === `fulfilled`) {
-    return Promise.resolve(delay);
-  } else {
-    return Promise.reject(delay);
-  }
+function createPromise(delay, state) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (state === 'fulfilled') {
+        resolve(delay);
+      } else {
+        reject(delay);
+      }
+    }, delay);
+  });
 }
 
 function handleSubmit(event) {
   event.preventDefault();
+  const delay = Number(inputDelay.value);
+  const state = inputStates.value;
+
   form.reset();
-  createPromise()
+
+  createPromise(delay, state)
     .then(delay => {
-      console.log(`✅ Fulfilled promise in ${delay}ms`);
-      setTimeout(() => {
-        iziToast.show({
-          message: `✅ Fulfilled promise in ${delay} ms`,
-          backgroundColor: '#59a10d',
-          messageColor: '#fff',
-          position: `topRight`,
-        });
-      }, delay);
+      iziToast.show({
+        message: `✅ Fulfilled promise in ${delay}ms`,
+        backgroundColor: '#59a10d',
+        position: 'topRight',
+      });
     })
     .catch(delay => {
-      console.log(`❌ Rejected promise in ${delay}ms`);
-      setTimeout(() => {
-        iziToast.show({
-          message: `❌ Rejected promise in ${delay} ms`,
-          backgroundColor: '#ef4040',
-          messageColor: '#fff',
-          position: `topRight`,
-        });
-      }, delay);
+      iziToast.show({
+        message: `❌ Rejected promise in ${delay}ms`,
+        backgroundColor: '#ef4040',
+        position: 'topRight',
+      });
     });
 }

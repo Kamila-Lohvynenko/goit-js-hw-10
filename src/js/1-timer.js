@@ -7,7 +7,7 @@ import 'izitoast/dist/css/iziToast.min.css';
 const input = document.querySelector('#datetime-picker');
 const start = document.querySelector('[data-start]');
 const days = document.querySelector('[data-days]');
-const hours = document.querySelector('[data-minutes]');
+const hours = document.querySelector('[data-hours]');
 const minutes = document.querySelector('[data-minutes]');
 const seconds = document.querySelector('[data-seconds]');
 
